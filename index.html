@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kış Programı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#141A21; --surface:#1C242E; --surface-2:#232D39; --line:#2F3B49;
+    --ink:#E8EDF2; --ink-dim:#95A3B3; --ink-faint:#6B7A8B;
+    --signal:#E8A33C; --rest:#5FA8A0; --done:#4E8C5A;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 16px 56px}
+
+  header{margin-bottom:18px}
+  .masthead{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:15px;
+    letter-spacing:.06em;color:var(--ink-faint);margin:0}
+
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:12px 0 22px}
+  .day{appearance:none;border:1px solid var(--line);background:var(--surface);
+    color:var(--ink-dim);border-radius:8px;padding:9px 0 8px;
+    font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:15px;
+    letter-spacing:.03em;cursor:pointer;position:relative;
+    transition:background .12s,color .12s,border-color .12s}
+  .day:hover{background:var(--surface-2)}
+  .day[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .day.today::after{content:"";position:absolute;left:50%;transform:translateX(-50%);
+    bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--signal)}
+  .day[aria-pressed="true"].today::after{background:var(--bg)}
+  .day:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+  .lead{margin-bottom:22px}
+  .lead .kicker{font-size:13px;color:var(--ink-faint);margin:0 0 2px}
+  .lead h1{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:44px;
+    line-height:1;letter-spacing:-.01em;margin:0 0 6px}
+  .lead .meta{font-size:14px;color:var(--ink-dim);margin:0}
+  .lead.rest h1{color:var(--rest)}
+
+  .block{margin-bottom:26px}
+  .block-head{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:4px}
+  .block-head h2{font-family:"Barlow Condensed",sans-serif;font-weight:600;
+    font-size:19px;margin:0;letter-spacing:.02em}
+  .count{font-size:13px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+
+  .item{display:flex;align-items:flex-start;gap:6px;border-bottom:1px solid var(--line)}
+  .item:last-of-type{border-bottom:0}
+  .tick{display:flex;gap:12px;align-items:flex-start;flex:1;min-width:0;
+    text-align:left;background:none;border:0;padding:13px 2px;
+    color:inherit;font:inherit;cursor:pointer}
+  .tick:focus-visible{outline:2px solid var(--signal);outline-offset:-2px;border-radius:4px}
+  .box{flex:0 0 auto;width:21px;height:21px;margin-top:2px;
+    border:1.5px solid var(--ink-faint);border-radius:5px;display:grid;place-items:center;
+    transition:background .12s,border-color .12s}
+  .box svg{width:12px;height:12px;opacity:0;stroke:#fff;stroke-width:3;fill:none}
+  .item.on .box{background:var(--done);border-color:var(--done)}
+  .item.on .box svg{opacity:1}
+  .item.on .name{color:var(--ink-faint);text-decoration:line-through}
+  .item.on .dose,.item.on .hint,.item.on .en{color:var(--ink-faint)}
+
+  .body{flex:1;min-width:0}
+  .name{display:block;font-weight:500;line-height:1.35}
+  .en{display:block;font-size:12.5px;color:var(--ink-faint);margin-top:1px}
+  .dose{display:block;font-size:14px;color:var(--signal);
+    font-variant-numeric:tabular-nums;margin-top:3px}
+  .hint{display:block;font-size:13px;color:var(--ink-dim);margin-top:3px}
+
+  .yt{flex:0 0 auto;align-self:center;display:grid;place-items:center;
+    width:40px;height:40px;border-radius:8px;border:1px solid var(--line);
+    color:var(--ink-faint);text-decoration:none;transition:color .12s,border-color .12s}
+  .yt:hover{color:#FF4D4D;border-color:#FF4D4D}
+  .yt:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+  .yt svg{width:17px;height:17px;fill:currentColor}
+
+  .note{background:var(--surface);border-left:2px solid var(--signal);
+    padding:11px 13px;border-radius:0 7px 7px 0;font-size:14px;
+    color:var(--ink-dim);margin-top:12px}
+  .note b{color:var(--ink);font-weight:600}
+
+  .card{background:var(--surface);border-radius:10px;padding:15px 16px;margin-top:26px}
+  .card h2{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:18px;
+    margin:0 0 11px;letter-spacing:.02em}
+  .macros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:11px}
+  .macro .v{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:600;
+    font-size:23px;line-height:1.1;font-variant-numeric:tabular-nums}
+  .macro .k{display:block;font-size:12px;color:var(--ink-faint);margin-top:1px}
+  .card p{margin:0;font-size:13.5px;color:var(--ink-dim);line-height:1.5}
+
+  .meal{border-top:1px solid var(--line);padding:11px 0}
+  .meal:first-of-type{border-top:0;padding-top:2px}
+  .meal:last-of-type{padding-bottom:2px}
+  .meal-name{font-weight:500;font-size:15px}
+  .meal-num{font-size:13.5px;color:var(--signal);font-variant-numeric:tabular-nums;
+    margin-left:6px}
+  .meal-desc{font-size:13.5px;color:var(--ink-dim);margin:2px 0 0;line-height:1.45}
+
+  footer{margin-top:26px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .reset{background:none;border:1px solid var(--line);color:var(--ink-faint);
+    border-radius:7px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .reset:hover{color:var(--ink-dim);border-color:var(--ink-faint)}
+  .reset:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+  .stamp{font-size:12.5px;color:var(--ink-faint)}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="masthead">Kış programı · yağ kaybı + kas koruma</p>
+    <div class="days" id="days" role="group" aria-label="Gün seç"></div>
+  </header>
+
+  <div class="lead" id="lead"></div>
+  <main id="main"></main>
+
+  <section class="card">
+    <h2>Her gün beslenme</h2>
+    <div class="macros">
+      <div class="macro"><span class="v">1850</span><span class="k">kcal</span></div>
+      <div class="macro"><span class="v">150</span><span class="k">g protein</span></div>
+      <div class="macro"><span class="v">65</span><span class="k">g yağ</span></div>
+      <div class="macro"><span class="v">165</span><span class="k">g karb.</span></div>
+    </div>
+    <p>Pencere 13.00–21.00. <b>13.00:</b> 4 yumurta + 100 g beyaz peynir. <b>16.30:</b> 200 g tavuk/180 g yağsız kıyma + 200 g bulgur veya mercimek + salata. Kreatin 3–5 g, uyku 7+ saat.</p>
+  </section>
+
+  <section class="card" id="dinner">
+    <h2>Akşam öğünü · 20.00</h2>
+    <p style="margin-bottom:12px">Beşi de dönüşümlü, canın hangisini isterse. Yağ bütçesi 13.00'te bitiyor — bu yüzden kuruyemiş sadece birinci seçenekte, diğerlerinde ek yağ yok.</p>
+  </section>
+
+  <footer>
+    <button class="reset" id="reset" type="button">Bugünkü işaretleri sil</button>
+    <span class="stamp" id="stamp"></span>
+  </footer>
+</div>
+
+<script>
+const yt = q => 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+
+const DAYS = [
+  {
+    ab:"Pzt", full:"Pazartesi", kicker:"Kardiyo", title:"Merdiven", meta:"15 dk · interval",
+    blocks:[{
+      h:"Seans",
+      items:[
+        {n:"Isınma", d:"2 dk", t:"Normal tempo bir tur çıkış–iniş."},
+        {n:"Hızlı çıkış", en:"Stair Climbing Interval", d:"3–4 kat × 8–10 tur", t:"Koşma, tempolu yürü. Nefesin kesilsin ama konuşabil.", q:"stair climbing workout technique"},
+        {n:"İnişte dinlen", d:"her tur arası", t:"Dizin zorlanırsa asansörle in, sadece çık."}
+      ]
+    },{
+      h:"Günlük 5 dk",
+      items:[
+        {n:"Barfiks", en:"Pull-Up", d:"3 × 2", t:"Maksimumunun yarısı. Yorulmadan.", q:"how to do a pull up proper form"},
+        {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 × 5", t:"Barda asılı, kollar düz, sadece omuz bıçakları.", q:"scapular pull up tutorial"},
+        {n:"Ölü asılma", en:"Dead Hang", d:"1 × 30–40 sn", q:"dead hang how to"}
+      ]
+    }],
+    note:"<b>İlerleme sırası:</b> önce tur sayısı → sonra çift basamak."
+  },
+  {
+    ab:"Sal", full:"Salı", kicker:"Kuvvet A", title:"İtiş + bacak", meta:"30 dk",
+    blocks:[{
+      h:"Seans",
+      items:[
+        {n:"Bulgarian split squat", en:"Bulgarian Split Squat", d:"3 × 12 / bacak", t:"2 × 6 kg dambıl.", q:"bulgarian split squat proper form"},
+        {n:"Ayak yükseltilmiş şınav", en:"Decline Push-Up", d:"3 set", t:"Tükenmeye 2 tekrar kala bırak.", q:"decline push up feet elevated form"},
+        {n:"Goblet squat", en:"Goblet Squat", d:"3 × 20", t:"6 kg · 3 sn in, 1 sn dur, kalk.", q:"goblet squat how to"},
+        {n:"Pike şınav", en:"Pike Push-Up", d:"3 × 8–10", q:"pike push up tutorial"},
+        {n:"Plank", en:"Plank", d:"3 × 45 sn", q:"how to do a plank correctly"}
+      ]
+    }],
+    note:"Ağırlık artıramayınca ilerleme sırası: <b>tempo yavaşlat → tepede duraklat → tek taraflı yap → hareket açısını artır.</b>"
+  },
+  {
+    ab:"Çar", full:"Çarşamba", kicker:"Kardiyo", title:"Sessiz devre", meta:"20 dk · 4 tur · zıplama yok",
+    blocks:[{
+      h:"45 sn çalış / 15 sn dinlen",
+      items:[
+        {n:"Reverse lunge", en:"Reverse Lunge", d:"dönüşümlü", t:"Geriye hamle. Sessiz ve diz dostu.", q:"reverse lunge proper form"},
+        {n:"Mountain climber", en:"Mountain Climber", d:"yavaş", t:"Kontrollü, ayakları yere vurmadan.", q:"mountain climber proper form"},
+        {n:"Tempolu squat", en:"Tempo Bodyweight Squat", d:"3 sn in – 1 sn kalk", t:"Yavaşlık zorluğu yaratır, ağırlık gerekmez.", q:"tempo bodyweight squat"},
+        {n:"Shadow boxing", en:"Shadow Boxing", d:"45 sn", t:"Çıplak elle daha uzun sürdürürsün.", q:"shadow boxing for beginners workout"}
+      ]
+    },{
+      h:"Günlük 5 dk",
+      items:[
+        {n:"Barfiks", en:"Pull-Up", d:"3 × 2", t:"Yorulmadan.", q:"how to do a pull up proper form"},
+        {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 × 5", q:"scapular pull up tutorial"},
+        {n:"Ölü asılma", en:"Dead Hang", d:"1 × 30–40 sn", q:"dead hang how to"}
+      ]
+    }],
+    note:"Turlar arası 60 sn. Zorlaşmazsa dinlenmeyi 15 → 10 sn'ye indir."
+  },
+  {
+    ab:"Per", full:"Perşembe", kicker:"Toparlanma", title:"Adım günü", meta:"8.000 adım", rest:true,
+    blocks:[{
+      h:"Gün boyu",
+      items:[
+        {n:"8.000 adım", d:"hedef", t:"Bantla takip et, tahminle gitme."},
+        {n:"Saat başı 5 dk ayakta", d:"iş günü boyunca", t:"Masa başı oturmak harcamayı en çok düşüren şey."},
+        {n:"Telefon görüşmeleri ayakta", d:"alışkanlık"}
+      ]
+    },{
+      h:"Günlük 5 dk",
+      items:[
+        {n:"Barfiks", en:"Pull-Up", d:"3 × 2", q:"how to do a pull up proper form"},
+        {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 × 5", q:"scapular pull up tutorial"},
+        {n:"Ölü asılma", en:"Dead Hang", d:"1 × 30–40 sn", q:"dead hang how to"}
+      ]
+    }],
+    note:"Hava kötüyse: apartman koridoru, kapalı otopark, AVM. <b>Adım, bisikletten daha büyük kaldıraç.</b>"
+  },
+  {
+    ab:"Cum", full:"Cuma", kicker:"Kardiyo", title:"Merdiven", meta:"15 dk · interval",
+    blocks:[{
+      h:"Seans",
+      items:[
+        {n:"Isınma", d:"2 dk"},
+        {n:"Hızlı çıkış", en:"Stair Climbing Interval", d:"3–4 kat × 8–10 tur", q:"stair climbing workout technique"},
+        {n:"İnişte dinlen", d:"her tur arası"}
+      ]
+    }],
+    note:"Yaklaşık 150–200 kcal. Bisikletin yerini dolduran seans bu."
+  },
+  {
+    ab:"Cmt", full:"Cumartesi", kicker:"Kuvvet B", title:"Çekiş + arka zincir", meta:"30 dk",
+    blocks:[{
+      h:"Seans",
+      items:[
+        {n:"Barfiks", en:"Pull-Up", d:"5 × 2–3", t:"Setler arası 2–2,5 dk tam dinlenme. 4 çekebiliyorsan 2–3 yap — tükenmeye gitme.", q:"how to do a pull up proper form"},
+        {n:"Negatif barfiks", en:"Eccentric / Negative Pull-Up", d:"2 × 3", t:"Sandalyeyle üste çık, 5 sn'de in. Sadece bitirişte.", q:"negative pull up eccentric tutorial"},
+        {n:"Tek bacak RDL", en:"Single-Leg Romanian Deadlift", d:"3 × 12 / bacak", t:"2 × 6 kg.", q:"single leg romanian deadlift dumbbell form"},
+        {n:"Dumbbell row", en:"One-Arm Dumbbell Row", d:"3 × 15 / kol", t:"6 kg, tepede 1 sn dur.", q:"one arm dumbbell row proper form"},
+        {n:"Ayak yükseltilmiş hip thrust", en:"Feet-Elevated Glute Bridge", d:"3 × 20", q:"feet elevated glute bridge form"},
+        {n:"Yan plank", en:"Side Plank", d:"3 × 30 sn / taraf", q:"side plank proper form"}
+      ]
+    }],
+    note:"Barfiks yol haritası: <b>5×2–3 → 5×4 → 5×5.</b> Sonra tempo yavaşlat, tepede 2 sn dur. Kilo düştükçe tekrarlar kendiliğinden artar."
+  },
+  {
+    ab:"Paz", full:"Pazar", kicker:"Toparlanma", title:"Yürüyüş", meta:"serbest · dinlenme", rest:true,
+    blocks:[{
+      h:"Gün",
+      items:[
+        {n:"Uzun yürüyüş", d:"40–60 dk", t:"Tempo serbest. İstemezsen tamamen dinlen."},
+        {n:"Ölü asılma", en:"Dead Hang", d:"1 set", t:"Dayanabildiğin kadar. Omuzlar için.", q:"dead hang how to"}
+      ]
+    }],
+    note:"Sabah aç karnına tart, haftada bir göbek çevresi ölç. <b>Günlük dalgalanmaya değil, haftalık ortalamaya bak.</b>"
+  }
+];
+
+const DINNERS = [
+  {n:"Yoğurt kâsesi", k:"≈ 500 kcal · 42 g protein",
+   d:"400 g yağsız yoğurt + 30 g ceviz veya badem + 1 elma. Günün tek kuruyemiş fırsatı."},
+  {n:"Tavuklu nohut salata", k:"≈ 470 kcal · 50 g protein",
+   d:"150 g ızgara tavuk göğsü + 100 g haşlanmış nohut + bol yeşillik + 150 g yoğurt. Sos: limon, nar ekşisi. Zeytinyağı yok."},
+  {n:"Fırında köfte", k:"≈ 420 kcal · 50 g protein",
+   d:"180 g yağsız dana kıyma köftesi (fırında, yağsız kâğıt üstünde) + 250 g közlenmiş sebze + 150 g yoğurt."},
+  {n:"Yeşil mercimek", k:"≈ 450 kcal · 40 g protein",
+   d:"300 g yeşil mercimek yemeği + 250 g yağsız yoğurt + salata. Mercimeği yağsız pişir, sebzeyle hacim ver."},
+  {n:"Tarhana + tavuk", k:"≈ 420 kcal · 45 g protein",
+   d:"300 ml tarhana çorbası + 150 g ızgara tavuk göğsü + salata. Soğuk akşamların en kolayı."}
+];
+
+const CHECK = '<svg viewBox="0 0 16 16"><polyline points="3,8.5 6.5,12 13,4.5"/></svg>';
+const PLAY = '<svg viewBox="0 0 24 24"><path d="M23 12s0-3.9-.5-5.8c-.3-1-1.1-1.8-2.1-2.1C18.5 3.6 12 3.6 12 3.6s-6.5 0-8.4.5c-1 .3-1.8 1.1-2.1 2.1C1 8.1 1 12 1 12s0 3.9.5 5.8c.3 1 1.1 1.8 2.1 2.1 1.9.5 8.4.5 8.4.5s6.5 0 8.4-.5c1-.3 1.8-1.1 2.1-2.1.5-1.9.5-5.8.5-5.8zM9.9 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>';
+
+const daysEl = document.getElementById('days');
+const leadEl = document.getElementById('lead');
+const mainEl = document.getElementById('main');
+const stampEl = document.getElementById('stamp');
+
+const now = new Date();
+const todayIdx = (now.getDay() + 6) % 7;
+const dateKey = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+const storeKey = 'kisprog:' + dateKey;
+let selected = todayIdx;
+
+function load(){
+  try{ const raw = localStorage.getItem(storeKey); return raw ? new Set(JSON.parse(raw)) : new Set(); }
+  catch(e){ return new Set(); }
+}
+function save(s){ try{ localStorage.setItem(storeKey, JSON.stringify([...s])); }catch(e){} }
+let checked = load();
+
+DAYS.forEach((d,i)=>{
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'day' + (i === todayIdx ? ' today' : '');
+  b.textContent = d.ab;
+  b.addEventListener('click', ()=>{ selected = i; render(); });
+  daysEl.appendChild(b);
+});
+
+function render(){
+  [...daysEl.children].forEach((b,i)=> b.setAttribute('aria-pressed', String(i === selected)));
+  const d = DAYS[selected];
+
+  leadEl.className = 'lead' + (d.rest ? ' rest' : '');
+  leadEl.innerHTML = '<p class="kicker">' + d.full + ' · ' + d.kicker + '</p>' +
+    '<h1>' + d.title + '</h1><p class="meta">' + d.meta + '</p>';
+
+  mainEl.innerHTML = '';
+  d.blocks.forEach((blk, bi)=>{
+    const sec = document.createElement('section');
+    sec.className = 'block';
+    const ids = blk.items.map((_,ii)=> selected + ':' + bi + ':' + ii);
+    const done = ids.filter(id => checked.has(id)).length;
+
+    const head = document.createElement('div');
+    head.className = 'block-head';
+    head.innerHTML = '<h2>' + blk.h + '</h2><span class="count">' + done + '/' + ids.length + '</span>';
+    sec.appendChild(head);
+
+    blk.items.forEach((it, ii)=>{
+      const id = ids[ii];
+      const row = document.createElement('div');
+      row.className = 'item' + (checked.has(id) ? ' on' : '');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tick';
+      btn.setAttribute('aria-pressed', String(checked.has(id)));
+      btn.innerHTML = '<span class="box">' + CHECK + '</span><span class="body">' +
+        '<span class="name">' + it.n + '</span>' +
+        (it.en ? '<span class="en">' + it.en + '</span>' : '') +
+        (it.d ? '<span class="dose">' + it.d + '</span>' : '') +
+        (it.t ? '<span class="hint">' + it.t + '</span>' : '') + '</span>';
+      btn.addEventListener('click', ()=>{
+        checked.has(id) ? checked.delete(id) : checked.add(id);
+        save(checked); render();
+      });
+      row.appendChild(btn);
+
+      if (it.q){
+        const a = document.createElement('a');
+        a.className = 'yt';
+        a.href = yt(it.q);
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.setAttribute('aria-label', (it.en || it.n) + ' nasıl yapılır — YouTube');
+        a.innerHTML = PLAY;
+        row.appendChild(a);
+      }
+      sec.appendChild(row);
+    });
+    mainEl.appendChild(sec);
+  });
+
+  if (d.note){
+    const n = document.createElement('div');
+    n.className = 'note';
+    n.innerHTML = d.note;
+    mainEl.appendChild(n);
+  }
+  stampEl.textContent = selected === todayIdx ? 'Bugün' : 'Bugün: ' + DAYS[todayIdx].full;
+}
+
+const dinnerEl = document.getElementById('dinner');
+DINNERS.forEach(m=>{
+  const el = document.createElement('div');
+  el.className = 'meal';
+  el.innerHTML = '<div><span class="meal-name">' + m.n + '</span>' +
+    '<span class="meal-num">' + m.k + '</span></div>' +
+    '<p class="meal-desc">' + m.d + '</p>';
+  dinnerEl.appendChild(el);
+});
+
+document.getElementById('reset').addEventListener('click', ()=>{
+  checked = new Set(); save(checked); render();
+});
+
+render();
+</script>
+</body>
+</html>

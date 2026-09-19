@@ -1,26 +1,35 @@
 # Kış Programı
 
-Tek dosyalık antrenman ve beslenme takip sayfası. Bağımlılık yok, derleme yok — `index.html` tarayıcıda açılır.
+Tek dosyalık antrenman ve beslenme takip sayfası. Bağımlılık yok, derleme yok — `index.html` doğrudan tarayıcıda açılır.
+
+**Canlı:** https://alikrc.github.io/SportProgram/
 
 ## İçerik
 
-- Haftanın 7 günü için ayrı program (merdiven intervali, sessiz devre, kuvvet A/B, adım günü)
-- Hareketlerin Türkçe + İngilizce adları ve YouTube anlatım bağlantıları
-- İşaretlenen hareketler `localStorage`'a tarih bazında yazılır, ertesi gün sıfırlanır
-- Günlük makro hedefleri ve 5 dönüşümlü akşam öğünü
-
-## GitHub Pages ile yayınlama
-
-1. Yeni bir repo aç, iki dosyayı da köke yükle.
-2. Settings → Pages → Source: `Deploy from a branch`, Branch: `main` / `(root)`.
-3. Birkaç dakika sonra `https://<kullanıcı-adı>.github.io/<repo-adı>/` adresinde yayında.
-
-Dosya adının `index.html` olması şart — Pages kökte onu arar. Private repo'da Pages ücretli plan ister; ücretsiz hesapta repo'yu public yap.
+- Haftanın 7 günü için ayrı program: merdiven intervali (Pzt/Cum), kuvvet A/B (Sal/Cmt), sessiz devre (Çar), adım günü (Per), yürüyüş (Paz)
+- Hareketlerin Türkçe + İngilizce adları ve her biri için YouTube arama bağlantısı
+- Sayfa açılınca bugünün günü seçili gelir; işaretlenen hareketler `localStorage`'a tarih bazında yazılır, ertesi gün sıfırlanır
+- Günlük makro hedefleri, öğün saatleri ve 5 dönüşümlü akşam öğünü
 
 ## Yerel kullanım
 
-`index.html` dosyasını çift tıkla. Telefonda ana ekrana kısayol olarak ekleyebilirsin.
+`index.html` dosyasını çift tıkla. Telefonda ana ekrana kısayol olarak eklenebilir.
+
+## GitHub Pages
+
+Sayfa bu repo'dan yayınlanıyor: Settings → Pages → Source: `Deploy from a branch`, Branch: `main` / `(root)`.
+
+`main`'e push edilen her değişiklik birkaç dakika içinde canlıya yansır. Dosya adının `index.html` olması şart — Pages kökte onu arar.
 
 ## Düzenleme
 
-Program verisi `<script>` içindeki `DAYS` dizisinde, akşam öğünleri `DINNERS` dizisinde. Set/tekrar değiştirmek için sadece bu iki diziye dokunman yeterli.
+Tüm veri `index.html` içindeki `<script>` bloğunda:
+
+- `DAYS` — günlük programlar. Her hareket şu alanları alır:
+  - `n` hareket adı (Türkçe), `en` İngilizce adı (opsiyonel)
+  - `d` set/tekrar/süre, `t` kısa not (opsiyonel)
+  - `q` YouTube arama sorgusu (opsiyonel, verilirse oynat butonu çıkar)
+- `DINNERS` — akşam öğünleri (`n` ad, `k` kalori/protein, `d` tarif)
+- Makro hedefleri ve öğün saatleri `<section class="card">` içinde düz HTML
+
+Set/tekrar değiştirmek için sadece `DAYS` dizisine dokunmak yeterli.

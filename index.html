@@ -104,6 +104,18 @@
   .meal-num{font-size:13.5px;color:var(--signal);font-variant-numeric:tabular-nums;
     margin-left:6px}
   .meal-desc{font-size:13.5px;color:var(--ink-dim);margin:2px 0 0;line-height:1.45}
+  .meal-links{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:6px;font-size:12.5px}
+  .meal-links a{color:var(--ink-faint);text-decoration:none;border-bottom:1px solid var(--line)}
+  .meal-links a:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .meal-links a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+  .links{list-style:none;margin:0;padding:0}
+  .links li{border-top:1px solid var(--line);padding:9px 0}
+  .links li:first-child{border-top:0;padding-top:0}
+  .links a{color:var(--ink);text-decoration:none;font-weight:500;font-size:14.5px}
+  .links a:hover{color:var(--signal)}
+  .links a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+  .links .src{display:block;font-size:12.5px;color:var(--ink-faint);margin-top:1px}
 
   footer{margin-top:26px;display:flex;justify-content:space-between;align-items:center;gap:12px}
   .reset{background:none;border:1px solid var(--line);color:var(--ink-faint);
@@ -141,6 +153,12 @@
     <p style="margin-bottom:12px">Beşi de dönüşümlü, canın hangisini isterse. Yağ bütçesi 13.00'te bitiyor — bu yüzden kuruyemiş sadece birinci seçenekte, diğerlerinde ek yağ yok.</p>
   </section>
 
+  <section class="card" id="more">
+    <h2>Daha fazla tarif</h2>
+    <p style="margin-bottom:12px">Bu beşi sıkarsa. Seçerken ölçüt: <b>40 g+ protein, 400–500 kcal, ek yağ yok</b> (zeytinyağı, tereyağı, kuruyemiş yok — ızgara, fırın, haşlama). Nohut yok.</p>
+    <ul class="links" id="more-links"></ul>
+  </section>
+
   <footer>
     <button class="reset" id="reset" type="button">Bugünkü işaretleri sil</button>
     <span class="stamp" id="stamp"></span>
@@ -149,6 +167,8 @@
 
 <script>
 const yt = q => 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+const nefis = q => 'https://www.nefisyemektarifleri.com/ara/?q=' + encodeURIComponent(q);
+const yc = q => 'https://yemek.com/ara/?q=' + encodeURIComponent(q);
 
 const DAYS = [
   {
@@ -265,15 +285,33 @@ const DAYS = [
 
 const DINNERS = [
   {n:"Yoğurt kâsesi", k:"≈ 500 kcal · 42 g protein",
-   d:"400 g yağsız yoğurt + 30 g ceviz veya badem + 1 elma. Günün tek kuruyemiş fırsatı."},
-  {n:"Tavuklu nohut salata", k:"≈ 470 kcal · 50 g protein",
-   d:"150 g ızgara tavuk göğsü + 100 g haşlanmış nohut + bol yeşillik + 150 g yoğurt. Sos: limon, nar ekşisi. Zeytinyağı yok."},
+   d:"400 g yağsız yoğurt + 30 g ceviz veya badem + 1 elma. Günün tek kuruyemiş fırsatı.",
+   q:"yüksek proteinli yoğurt kasesi tarifi", s:"proteinli yoğurt kase"},
+  {n:"Tavuklu patates salata", k:"≈ 450 kcal · 50 g protein",
+   d:"150 g ızgara tavuk göğsü + 100 g haşlanmış patates + bol yeşillik + 150 g yoğurt. Sos: limon, nar ekşisi. Zeytinyağı yok.",
+   q:"ızgara tavuklu salata fit tarif", s:"tavuklu salata diyet"},
   {n:"Fırında köfte", k:"≈ 420 kcal · 50 g protein",
-   d:"180 g yağsız dana kıyma köftesi (fırında, yağsız kâğıt üstünde) + 250 g közlenmiş sebze + 150 g yoğurt."},
+   d:"180 g yağsız dana kıyma köftesi (fırında, yağsız kâğıt üstünde) + 250 g közlenmiş sebze + 150 g yoğurt.",
+   q:"fırında yağsız köfte sebzeli tarif", s:"fırında köfte diyet"},
   {n:"Yeşil mercimek", k:"≈ 450 kcal · 40 g protein",
-   d:"300 g yeşil mercimek yemeği + 250 g yağsız yoğurt + salata. Mercimeği yağsız pişir, sebzeyle hacim ver."},
+   d:"300 g yeşil mercimek yemeği + 250 g yağsız yoğurt + salata. Mercimeği yağsız pişir, sebzeyle hacim ver.",
+   q:"yağsız yeşil mercimek yemeği tarifi", s:"yeşil mercimek yemeği diyet"},
   {n:"Tarhana + tavuk", k:"≈ 420 kcal · 45 g protein",
-   d:"300 ml tarhana çorbası + 150 g ızgara tavuk göğsü + salata. Soğuk akşamların en kolayı."}
+   d:"300 ml tarhana çorbası + 150 g ızgara tavuk göğsü + salata. Soğuk akşamların en kolayı.",
+   q:"yağsız tarhana çorbası tarifi", s:"tarhana çorbası diyet"}
+];
+
+// Beş öğünün dışına çıkmak için: site kategorileri + hazır YouTube aramaları.
+const MORE = [
+  {n:"Diyet tarifleri", src:"Nefis Yemek Tarifleri · kategori", href:"https://www.nefisyemektarifleri.com/diyet-tarifleri/"},
+  {n:"Yağsız yüksek proteinli tarifler", src:"Nefis Yemek Tarifleri · arama", href:nefis("yağsız yüksek proteinli")},
+  {n:"Fit tarifler", src:"yemek.com · arama", href:yc("fit")},
+  {n:"Yüksek proteinli düşük yağlı akşam yemeği", src:"YouTube", href:yt("yüksek proteinli düşük yağlı akşam yemeği tarifleri")},
+  {n:"Fit tavuk tarifleri", src:"YouTube", href:yt("fit tavuk göğsü tarifleri fırında ızgara")},
+  {n:"Yağsız fırın köfte", src:"YouTube", href:yt("yağsız fırında köfte tarifi diyet")},
+  {n:"Yoğurtlu protein salataları", src:"YouTube", href:yt("yoğurtlu yüksek proteinli salata tarifleri")},
+  {n:"Fırında balık + sebze", src:"YouTube", href:yt("fırında balık sebze diyet tarifi")},
+  {n:"Yumurtalı fit akşam yemeği", src:"YouTube", href:yt("yumurtalı fit akşam yemeği tarifi")}
 ];
 
 const CHECK = '<svg viewBox="0 0 16 16"><polyline points="3,8.5 6.5,12 13,4.5"/></svg>';
@@ -376,8 +414,21 @@ DINNERS.forEach(m=>{
   el.className = 'meal';
   el.innerHTML = '<div><span class="meal-name">' + m.n + '</span>' +
     '<span class="meal-num">' + m.k + '</span></div>' +
-    '<p class="meal-desc">' + m.d + '</p>';
+    '<p class="meal-desc">' + m.d + '</p>' +
+    '<div class="meal-links">' +
+      '<a href="' + yt(m.q) + '" target="_blank" rel="noopener">▶ YouTube</a>' +
+      '<a href="' + nefis(m.s) + '" target="_blank" rel="noopener">Nefis Yemek Tarifleri</a>' +
+      '<a href="' + yc(m.s) + '" target="_blank" rel="noopener">yemek.com</a>' +
+    '</div>';
   dinnerEl.appendChild(el);
+});
+
+const moreEl = document.getElementById('more-links');
+MORE.forEach(l=>{
+  const li = document.createElement('li');
+  li.innerHTML = '<a href="' + l.href + '" target="_blank" rel="noopener">' + l.n + '</a>' +
+    '<span class="src">' + l.src + '</span>';
+  moreEl.appendChild(li);
 });
 
 document.getElementById('reset').addEventListener('click', ()=>{

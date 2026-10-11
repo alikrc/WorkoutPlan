@@ -109,6 +109,9 @@
   .meal-links a:hover{color:var(--ink);border-color:var(--ink-faint)}
   .meal-links a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
 
+  .card .meal-day{font-size:12.5px;color:var(--ink-faint);margin:3px 0 0;font-variant-numeric:tabular-nums}
+  .card .group{font-size:12.5px;color:var(--ink-faint);margin:16px 0 4px;letter-spacing:.02em}
+
   .links{list-style:none;margin:0;padding:0}
   .links li{border-top:1px solid var(--line);padding:9px 0}
   .links li:first-child{border-top:0;padding-top:0}
@@ -138,34 +141,28 @@
   <main id="main"></main>
 
   <section class="card">
-    <h2>Her gün beslenme · 2 öğün</h2>
+    <h2>Her gün beslenme</h2>
     <div class="macros">
-      <div class="macro"><span class="v">1850</span><span class="k">kcal</span></div>
-      <div class="macro"><span class="v">150</span><span class="k">g protein</span></div>
-      <div class="macro"><span class="v">65</span><span class="k">g yağ</span></div>
-      <div class="macro"><span class="v">165</span><span class="k">g karb.</span></div>
+      <div class="macro"><span class="v">1820</span><span class="k">kcal</span></div>
+      <div class="macro"><span class="v">124</span><span class="k">g protein</span></div>
+      <div class="macro"><span class="v">103</span><span class="k">g yağ</span></div>
+      <div class="macro"><span class="v">97</span><span class="k">g karb.</span></div>
     </div>
-    <div class="meals">
-      <div class="meal">
-        <div><span class="meal-name">13.00 · Birinci öğün</span><span class="meal-num">≈ 850 kcal · 80 g protein</span></div>
-        <p class="meal-desc">3 yumurta + 60 g beyaz peynir + 150 g ızgara tavuk + 200 g bulgur veya mercimek pilavı + salata.</p>
-      </div>
-      <div class="meal">
-        <div><span class="meal-name">19.30 · İkinci öğün</span><span class="meal-num">≈ 1000 kcal · 70 g protein</span></div>
-        <p class="meal-desc">Antrenmandan (18.30) sonra. Aşağıdaki beş seçenekten biri.</p>
-      </div>
-    </div>
-    <p style="margin-top:11px">Pencere 13.00–21.00, aradaki saatlerde öğün yok. Kreatin 3–5 g, uyku 7+ saat.</p>
+    <p style="margin-bottom:12px">Planın haftalık ortalaması (sabitler + haftada 5 tavuklu, 2 baklagil akşam). Yağ payı yüksek (peynir, yumurta, Nutzilla, ceviz), bu yüzden akşamda ek yağ sınırlı.</p>
+    <p class="group" style="margin-top:0">Sabit · her gün aynı</p>
+    <div class="meals" id="fixed"></div>
+    <div class="note" id="fixed-note"></div>
+    <p style="margin-top:11px">Araya öğün girmiyor. Uyku 7+ saat.</p>
   </section>
 
   <section class="card" id="dinner">
-    <h2>İkinci öğün · 19.30</h2>
-    <p style="margin-bottom:12px">Beşi de dönüşümlü, canın hangisini isterse. Her biri günün yarısı: ≈ 1000 kcal, 65–75 g protein. Yağ bütçesinin yarısı 13.00'te gidiyor — kuruyemiş sadece birinci seçenekte, diğerlerinde ek yağ en fazla 1 yemek kaşığı zeytinyağı.</p>
+    <h2>Akşam yemeği · 19.30</h2>
+    <p style="margin-bottom:4px">Sabit peynirin yanına küçük bir tabak: ≈ 250–290 kcal, tavuklularda 37–40 g protein. Sebze ve salata serbest. Gün toplamı sabitler dahil yazılı. Ek yağ en fazla 1 tatlı kaşığı zeytinyağı, yemeğe tuz ekleme. Makarna ve bulgur çıktı: 60–70 g makarna tek başına tabağın bütün kalori bütçesini yer. Nohut yok.</p>
   </section>
 
   <section class="card" id="more">
     <h2>Daha fazla tarif</h2>
-    <p style="margin-bottom:12px">Bu beşi sıkarsa. Seçerken ölçüt: <b>tarifte 40 g+ protein, ek yağ yok</b> (ızgara, fırın, haşlama). Yanına pilav, bulgur veya ekmek ekleyip ≈ 1000 kcal'e tamamla. Nohut yok.</p>
+    <p style="margin-bottom:12px">Bu seçenekler sıkarsa. Ölçüt: <b>tabak ≈ 250–290 kcal, 35 g+ protein, ek yağ en fazla 1 tatlı kaşığı</b> (ızgara, fırın, haşlama). Peynir zaten sabit, tabağa ayrıca peynir ekleme. Nohut yok.</p>
     <ul class="links" id="more-links"></ul>
   </section>
 
@@ -252,25 +249,51 @@ const DAYS = [
     blocks:[{h:"Gün", items:[{n:"Tam dinlenme", t:"Sabah aç karnına tart, haftalık ortalamaya bak."}]}]}
 ];
 
+// Sabit öğünler: her gün aynı. Akşam seçeneklerinin gün toplamı bunun üstüne hesaplanır.
+const FIXED = [
+  {t:"13.00", n:"Öğle", kcal:1150, p:60,
+   d:"4 yumurta (haşlama, omlet veya menemen) + 100 g beyaz peynir + yeşillik, domates, salatalık + 3 dilim tam buğday ekmeği + ekmeğe 2 yemek kaşığı Nutzilla (≈ 40 g, 545 kcal/100 g, tek başına ≈ 220 kcal) + 3 ceviz (≈ 105 kcal). Omlet veya menemen yağı en fazla 1 tatlı kaşığı zeytinyağı (+45 kcal)."},
+  {t:"19.30", n:"Akşam peyniri", kcal:270, p:17,
+   d:"100 g beyaz peynir, akşam yemeğinin yanında. Günde 200 g peynir ≈ 4–6 g tuz: 30–60 dk suda beklet."},
+  {t:"Gece", n:"Yatmadan önce", kcal:130, p:15,
+   d:"250 ml yüksek proteinli süt."}
+];
+const FIXED_KCAL = FIXED.reduce((s, m) => s + m.kcal, 0);
+const FIXED_P = FIXED.reduce((s, m) => s + m.p, 0);
+
+// kcal ve p yalnızca tabak içindir (sabit peynir hariç). Gün toplamı FIXED ile otomatik toplanır.
 const DINNERS = [
-  {n:"Yoğurt kâsesi", k:"≈ 990 kcal · 65 g protein",
-   d:"500 g yağsız süzme yoğurt + 40 g ceviz veya badem + 60 g yulaf + 1 muz + 1 elma. Günün tek kuruyemiş fırsatı.",
-   q:"yüksek proteinli yoğurt kasesi tarifi", s:"proteinli yoğurt kase"},
-  {n:"Tavuklu patates salata", k:"≈ 1000 kcal · 75 g protein",
-   d:"150 g ızgara tavuk göğsü + 400 g haşlanmış patates + bol yeşillik + 150 g yoğurt + 2 dilim tam buğday ekmeği. Sos: limon, nar ekşisi, 1 yemek kaşığı zeytinyağı.",
-   q:"ızgara tavuklu salata fit tarif", s:"tavuklu salata diyet"},
-  {n:"Fırında köfte", k:"≈ 980 kcal · 75 g protein",
-   d:"200 g yağsız dana kıyma köftesi (fırında, yağsız kâğıt üstünde) + 250 g közlenmiş sebze (1 yemek kaşığı zeytinyağı) + 300 g bulgur pilavı + 150 g yoğurt + 2 dilim ekmek.",
-   q:"fırında yağsız köfte sebzeli tarif", s:"fırında köfte diyet"},
-  {n:"Yeşil mercimek", k:"≈ 1000 kcal · 75 g protein",
-   d:"450 g yeşil mercimek yemeği + 250 g yağsız yoğurt + salata (1 yemek kaşığı zeytinyağı) + 2 dilim tam buğday ekmeği. Mercimeği yağsız pişir, sebzeyle hacim ver.",
-   q:"yağsız yeşil mercimek yemeği tarifi", s:"yeşil mercimek yemeği diyet"},
-  {n:"Tarhana + tavuk", k:"≈ 980 kcal · 70 g protein",
-   d:"500 ml tarhana çorbası + 150 g ızgara tavuk göğsü + 250 g bulgur pilavı + salata (1 yemek kaşığı zeytinyağı) + 2 dilim ekmek. Soğuk akşamların en kolayı.",
-   q:"yağsız tarhana çorbası tarifi", s:"tarhana çorbası diyet"}
+  {g:"Tavuklu · haftada 5", items:[
+    {n:"Tavada tavuk sote", kcal:280, p:40,
+     d:"170 g çiğ tavuk göğsünü küp doğra, 1 tatlı kaşığı zeytinyağında biberle sote et. Yanına bol salata.",
+     q:"tavuk göğsü sote tarifi", s:"tavuk göğsü sote"},
+    {n:"Domatesli tavuk sote", kcal:240, p:40,
+     d:"170 g çiğ tavuk göğsü, biber ve bol domatesle tencerede kendi suyunda pişir. Yağ yok.",
+     q:"domatesli tavuk sote tarifi", s:"domatesli tavuk sote"},
+    {n:"Fırında baharatlı tavuk", kcal:265, p:40,
+     d:"170 g çiğ tavuk göğsünü dilimle, 1 tatlı kaşığı zeytinyağı, limon ve baharatla yağlı kâğıt üzerinde fırında pişir. Yanına bol salata.",
+     q:"fırında baharatlı tavuk göğsü tarifi", s:"fırında tavuk göğsü"},
+    {n:"Açık tavuklu sandviç", kcal:290, p:40,
+     d:"1 dilim tam buğday ekmeği üstüne 120 g pişmiş tavuk göğsü dilimleri, marul ve domates. Ek yağ yok.",
+     q:"tavuklu sandviç fit tarifi", s:"tavuklu sandviç"},
+    {n:"Tavuk göğüslü salata", kcal:280, p:37,
+     d:"120 g pişmiş, didiklenmiş tavuk göğsü + bol marul, domates, salatalık. Sos: 1 tatlı kaşığı zeytinyağı ve limon.",
+     q:"tavuk göğüslü salata tarifi", s:"tavuk göğüslü salata"},
+    {n:"Yoğurtlu tavuk salatası", kcal:275, p:40,
+     d:"120 g haşlanmış, didiklenmiş tavuk göğsü + 100 g yoğurt, pul biber. Yanına salatalık. Yağ yok.",
+     q:"yoğurtlu tavuk salatası tarifi", s:"yoğurtlu tavuk salatası"}
+  ]},
+  {g:"Baklagil · haftada en fazla 2 (protein çok daha düşük)", items:[
+    {n:"Yeşil mercimek yemeği", kcal:270, p:15,
+     d:"40 g kuru yeşil mercimeği soğan ve salçayla tencerede pişir, 1 tatlı kaşığı zeytinyağı. Yanına 100 g yoğurt.",
+     q:"yeşil mercimek yemeği tarifi", s:"yeşil mercimek yemeği"},
+    {n:"Kuru fasulye", kcal:270, p:13,
+     d:"40 g kuru fasulyeyi (akşamdan ıslat) soğan ve salçayla pişir, 1 tatlı kaşığı zeytinyağı; taneleri süzerek al. Yanına 100 g yoğurt.",
+     q:"kuru fasulye tarifi", s:"kuru fasulye"}
+  ]}
 ];
 
-// Beş öğünün dışına çıkmak için: site kategorileri + hazır YouTube aramaları.
+// Akşam seçeneklerinin dışına çıkmak için: site kategorileri + hazır YouTube aramaları.
 const MORE = [
   {n:"Diyet tarifleri", src:"Nefis Yemek Tarifleri · kategori", href:"https://www.nefisyemektarifleri.com/diyet-tarifleri/"},
   {n:"Yağsız yüksek proteinli tarifler", src:"Nefis Yemek Tarifleri · arama", href:nefis("yağsız yüksek proteinli")},
@@ -377,19 +400,42 @@ function render(){
   stampEl.textContent = selected === todayIdx ? 'Bugün' : 'Bugün: ' + DAYS[todayIdx].full;
 }
 
-const dinnerEl = document.getElementById('dinner');
-DINNERS.forEach(m=>{
+const fixedEl = document.getElementById('fixed');
+FIXED.forEach(m=>{
   const el = document.createElement('div');
   el.className = 'meal';
-  el.innerHTML = '<div><span class="meal-name">' + m.n + '</span>' +
-    '<span class="meal-num">' + m.k + '</span></div>' +
-    '<p class="meal-desc">' + m.d + '</p>' +
-    '<div class="meal-links">' +
-      '<a href="' + yt(m.q) + '" target="_blank" rel="noopener">▶ YouTube</a>' +
-      '<a href="' + nefis(m.s) + '" target="_blank" rel="noopener">Nefis Yemek Tarifleri</a>' +
-      '<a href="' + yc(m.s) + '" target="_blank" rel="noopener">yemek.com</a>' +
-    '</div>';
-  dinnerEl.appendChild(el);
+  el.innerHTML = '<div><span class="meal-name">' + m.t + ' · ' + m.n + '</span>' +
+    '<span class="meal-num">≈ ' + m.kcal + ' kcal · ' + m.p + ' g protein</span></div>' +
+    '<p class="meal-desc">' + m.d + '</p>';
+  fixedEl.appendChild(el);
+});
+document.getElementById('fixed-note').innerHTML =
+  '<b>Sabit toplam ≈ ' + FIXED_KCAL + ' kcal · ' + FIXED_P + ' g protein.</b> Akşam yemeği bunun üstüne eklenir.';
+
+const dinnerEl = document.getElementById('dinner');
+DINNERS.forEach(grp=>{
+  const label = document.createElement('p');
+  label.className = 'group';
+  label.textContent = grp.g;
+  dinnerEl.appendChild(label);
+
+  const list = document.createElement('div');
+  list.className = 'meals';
+  grp.items.forEach(m=>{
+    const el = document.createElement('div');
+    el.className = 'meal';
+    el.innerHTML = '<div><span class="meal-name">' + m.n + '</span>' +
+      '<span class="meal-num">≈ ' + m.kcal + ' kcal · ' + m.p + ' g protein</span></div>' +
+      '<p class="meal-desc">' + m.d + '</p>' +
+      '<p class="meal-day">Gün toplamı ≈ ' + (FIXED_KCAL + m.kcal) + ' kcal · ' + (FIXED_P + m.p) + ' g protein</p>' +
+      '<div class="meal-links">' +
+        '<a href="' + yt(m.q) + '" target="_blank" rel="noopener">▶ YouTube</a>' +
+        '<a href="' + nefis(m.s) + '" target="_blank" rel="noopener">Nefis Yemek Tarifleri</a>' +
+        '<a href="' + yc(m.s) + '" target="_blank" rel="noopener">yemek.com</a>' +
+      '</div>';
+    list.appendChild(el);
+  });
+  dinnerEl.appendChild(list);
 });
 
 const moreEl = document.getElementById('more-links');

@@ -130,7 +130,7 @@
 <body>
 <div class="wrap">
   <header>
-    <p class="masthead">Kış programı · yağ kaybı + kas koruma</p>
+    <p class="masthead">Kış programı · tüm vücut kas gelişimi</p>
     <div class="days" id="days" role="group" aria-label="Gün seç"></div>
   </header>
 
@@ -149,7 +149,7 @@
   </section>
 
   <section class="card" id="dinner">
-    <h2>Akşam öğünü · 20.00</h2>
+    <h2>Akşam öğünü · 19.30</h2>
     <p style="margin-bottom:12px">Beşi de dönüşümlü, canın hangisini isterse. Yağ bütçesi 13.00'te bitiyor — bu yüzden kuruyemiş sadece birinci seçenekte, diğerlerinde ek yağ yok.</p>
   </section>
 
@@ -170,117 +170,76 @@ const yt = q => 'https://www.youtube.com/results?search_query=' + encodeURICompo
 const nefis = q => 'https://www.nefisyemektarifleri.com/ara/?q=' + encodeURIComponent(q);
 const yc = q => 'https://yemek.com/ara/?q=' + encodeURIComponent(q);
 
+const HANG = {
+  h:"Günlük 5 dk",
+  items:[
+    {n:"Barfiks", en:"Pull-Up", d:"3 set × 2 tekrar", t:"Maksimumunun yarısı. Yorulmadan.", q:"how to do a pull up proper form"},
+    {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 set × 5 tekrar", t:"Barda asılı, kollar düz, sadece omuz bıçakları.", q:"scapular pull up tutorial"}
+  ]
+};
+
+const WARM_UP = {
+  h:"Isınma · 2 dk",
+  items:[
+    {n:"Omuz çevirme", d:"30 sn", t:"Kollar açık, öne ve arkaya daireler."},
+    {n:"Kol sallama + göğüs açma", d:"20 sn", t:"Kendine sarılıp kolları geri aç."},
+    {n:"Bilek çevirme", d:"20 sn", t:"Şınav için. Parmak uçlarından bileğe esne."},
+    {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"1 set × 5 tekrar", t:"Barda asılı, kollar düz, sadece omuz bıçakları. Barfiks için omuzu uyandırır.", q:"scapular pull up tutorial"},
+    {n:"Kolay şınav", en:"Push-Up", d:"1 set × 5 tekrar", t:"Yavaş ve rahat. Tükenme yok.", q:"push up proper form"}
+  ]
+};
+const WARM_LOW = {
+  h:"Isınma · 2 dk",
+  items:[
+    {n:"Kalça çevirme", en:"Hip Circles", d:"30 sn", t:"Ayakta, her yöne geniş daireler.", q:"hip circles warm up"},
+    {n:"Ayak bileği çevirme", d:"20 sn", t:"Her ayak 10 sn. Squatta topuk kalkmasın diye."},
+    {n:"Yavaş squat", d:"10 tekrar", t:"Dipte 2 sn bekle, kalçayı ve kasıkları aç.", q:"bodyweight squat warm up"},
+    {n:"Dambılsız RDL", d:"8 tekrar", t:"Sadece hareketi ısıt: kalçayı geri it, sırt düz.", q:"bodyweight romanian deadlift tutorial"}
+  ]
+};
+
+// A = squat + RDL, B = şınav + barfiks. Tüm seans akşam yemeğinden (19.30) önce, 18.30'da yapılır.
+const A_MAIN = {
+  h:"Seans · 10 dk",
+  items:[
+    {n:"Tempolu squat", en:"Tempo Squat", d:"3 set × 15 tekrar", t:"2 sn kontrollü in, 1 sn güçlüce kalk. Acele etme. Kolaylaşınca 6 kg dambılı göğüste tut (goblet).", q:"tempo squat how to"},
+    {n:"Dambıl RDL", en:"Dumbbell Romanian Deadlift", d:"3 set × 12 tekrar", t:"Her elde 6 kg dambıl, iki bacak. Kalçayı geri it, sırt düz. İnişi 3 sn'de yap.", q:"dumbbell romanian deadlift form"}
+  ]
+};
+const B_MAIN = {
+  h:"Seans · 8 dk",
+  items:[
+    {n:"Şınav", en:"Push-Up", d:"3 set × 8–10 tekrar", t:"Tükenmeye 2 tekrar kala bırak. Her hafta 1 tekrar ekle.", q:"push up proper form"},
+    {n:"Barfiks", en:"Pull-Up", d:"3 set × 2–3 tekrar", t:"Setler arası 60 sn. Tükenmeye gitme.", q:"how to do a pull up proper form"}
+  ]
+};
+const A_NOTE = "<b>İlerleme:</b> önce tempoyu yavaşlat, dipte duraklat, sonra dambıl ekle.";
+const B_NOTE = "<b>İlerleme:</b> önce tekrar ekle, sonra tempoyu yavaşlat.";
+
+const A = {kicker:"A · Alt vücut", title:"Squat · RDL", meta:"18.30 · 2 dk ısınma + 10 dk", blocks:[WARM_LOW, A_MAIN], note:A_NOTE};
+const B = {kicker:"B · Üst vücut", title:"Şınav · barfiks", meta:"18.30 · 2 dk ısınma + 8 dk", blocks:[WARM_UP, B_MAIN], note:B_NOTE};
+const REST_NOTE = "Kaslar dinlenme gününde büyür. Barfiks rutini sadece alışkanlık için, yorulma.";
+
+// Haftalık dönüşüm: tek haftalarda A-B-A (alt-üst-alt), çift haftalarda B-A-B (üst-alt-üst).
+// Böylece iki haftada her ikisi de 3'er kez çalışır.
+const isoWeek = d => {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+  return Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
+};
+const lowerFirst = isoWeek(new Date()) % 2 === 1;
+const [D1, D2, D3] = lowerFirst ? [A, B, A] : [B, A, B];
+
 const DAYS = [
-  {
-    ab:"Pzt", full:"Pazartesi", kicker:"Kardiyo", title:"Merdiven", meta:"15 dk · interval",
-    blocks:[{
-      h:"Seans",
-      items:[
-        {n:"Isınma", d:"2 dk", t:"Normal tempo bir tur çıkış–iniş."},
-        {n:"Hızlı çıkış", en:"Stair Climbing Interval", d:"3–4 kat × 8–10 tur", t:"Koşma, tempolu yürü. Nefesin kesilsin ama konuşabil.", q:"stair climbing workout technique"},
-        {n:"İnişte dinlen", d:"her tur arası", t:"Dizin zorlanırsa asansörle in, sadece çık."}
-      ]
-    },{
-      h:"Günlük 5 dk",
-      items:[
-        {n:"Barfiks", en:"Pull-Up", d:"3 × 2", t:"Maksimumunun yarısı. Yorulmadan.", q:"how to do a pull up proper form"},
-        {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 × 5", t:"Barda asılı, kollar düz, sadece omuz bıçakları.", q:"scapular pull up tutorial"},
-        {n:"Ölü asılma", en:"Dead Hang", d:"1 × 30–40 sn", q:"dead hang how to"}
-      ]
-    }],
-    note:"<b>İlerleme sırası:</b> önce tur sayısı → sonra çift basamak."
-  },
-  {
-    ab:"Sal", full:"Salı", kicker:"Kuvvet A", title:"İtiş + bacak", meta:"30 dk",
-    blocks:[{
-      h:"Seans",
-      items:[
-        {n:"Bulgarian split squat", en:"Bulgarian Split Squat", d:"3 × 12 / bacak", t:"2 × 6 kg dambıl.", q:"bulgarian split squat proper form"},
-        {n:"Ayak yükseltilmiş şınav", en:"Decline Push-Up", d:"3 set", t:"Tükenmeye 2 tekrar kala bırak.", q:"decline push up feet elevated form"},
-        {n:"Goblet squat", en:"Goblet Squat", d:"3 × 20", t:"6 kg · 3 sn in, 1 sn dur, kalk.", q:"goblet squat how to"},
-        {n:"Pike şınav", en:"Pike Push-Up", d:"3 × 8–10", q:"pike push up tutorial"},
-        {n:"Plank", en:"Plank", d:"3 × 45 sn", q:"how to do a plank correctly"}
-      ]
-    }],
-    note:"Ağırlık artıramayınca ilerleme sırası: <b>tempo yavaşlat → tepede duraklat → tek taraflı yap → hareket açısını artır.</b>"
-  },
-  {
-    ab:"Çar", full:"Çarşamba", kicker:"Kardiyo", title:"Sessiz devre", meta:"20 dk · 4 tur · zıplama yok",
-    blocks:[{
-      h:"45 sn çalış / 15 sn dinlen",
-      items:[
-        {n:"Reverse lunge", en:"Reverse Lunge", d:"dönüşümlü", t:"Geriye hamle. Sessiz ve diz dostu.", q:"reverse lunge proper form"},
-        {n:"Mountain climber", en:"Mountain Climber", d:"yavaş", t:"Kontrollü, ayakları yere vurmadan.", q:"mountain climber proper form"},
-        {n:"Tempolu squat", en:"Tempo Bodyweight Squat", d:"3 sn in – 1 sn kalk", t:"Yavaşlık zorluğu yaratır, ağırlık gerekmez.", q:"tempo bodyweight squat"},
-        {n:"Shadow boxing", en:"Shadow Boxing", d:"45 sn", t:"Çıplak elle daha uzun sürdürürsün.", q:"shadow boxing for beginners workout"}
-      ]
-    },{
-      h:"Günlük 5 dk",
-      items:[
-        {n:"Barfiks", en:"Pull-Up", d:"3 × 2", t:"Yorulmadan.", q:"how to do a pull up proper form"},
-        {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 × 5", q:"scapular pull up tutorial"},
-        {n:"Ölü asılma", en:"Dead Hang", d:"1 × 30–40 sn", q:"dead hang how to"}
-      ]
-    }],
-    note:"Turlar arası 60 sn. Zorlaşmazsa dinlenmeyi 15 → 10 sn'ye indir."
-  },
-  {
-    ab:"Per", full:"Perşembe", kicker:"Toparlanma", title:"Adım günü", meta:"8.000 adım", rest:true,
-    blocks:[{
-      h:"Gün boyu",
-      items:[
-        {n:"8.000 adım", d:"hedef", t:"Bantla takip et, tahminle gitme."},
-        {n:"Saat başı 5 dk ayakta", d:"iş günü boyunca", t:"Masa başı oturmak harcamayı en çok düşüren şey."},
-        {n:"Telefon görüşmeleri ayakta", d:"alışkanlık"}
-      ]
-    },{
-      h:"Günlük 5 dk",
-      items:[
-        {n:"Barfiks", en:"Pull-Up", d:"3 × 2", q:"how to do a pull up proper form"},
-        {n:"Skapular çekiş", en:"Scapular Pull-Up", d:"2 × 5", q:"scapular pull up tutorial"},
-        {n:"Ölü asılma", en:"Dead Hang", d:"1 × 30–40 sn", q:"dead hang how to"}
-      ]
-    }],
-    note:"Hava kötüyse: apartman koridoru, kapalı otopark, AVM. <b>Adım, bisikletten daha büyük kaldıraç.</b>"
-  },
-  {
-    ab:"Cum", full:"Cuma", kicker:"Kardiyo", title:"Merdiven", meta:"15 dk · interval",
-    blocks:[{
-      h:"Seans",
-      items:[
-        {n:"Isınma", d:"2 dk"},
-        {n:"Hızlı çıkış", en:"Stair Climbing Interval", d:"3–4 kat × 8–10 tur", q:"stair climbing workout technique"},
-        {n:"İnişte dinlen", d:"her tur arası"}
-      ]
-    }],
-    note:"Yaklaşık 150–200 kcal. Bisikletin yerini dolduran seans bu."
-  },
-  {
-    ab:"Cmt", full:"Cumartesi", kicker:"Kuvvet B", title:"Çekiş + arka zincir", meta:"30 dk",
-    blocks:[{
-      h:"Seans",
-      items:[
-        {n:"Barfiks", en:"Pull-Up", d:"5 × 2–3", t:"Setler arası 2–2,5 dk tam dinlenme. 4 çekebiliyorsan 2–3 yap — tükenmeye gitme.", q:"how to do a pull up proper form"},
-        {n:"Negatif barfiks", en:"Eccentric / Negative Pull-Up", d:"2 × 3", t:"Sandalyeyle üste çık, 5 sn'de in. Sadece bitirişte.", q:"negative pull up eccentric tutorial"},
-        {n:"Tek bacak RDL", en:"Single-Leg Romanian Deadlift", d:"3 × 12 / bacak", t:"2 × 6 kg.", q:"single leg romanian deadlift dumbbell form"},
-        {n:"Dumbbell row", en:"One-Arm Dumbbell Row", d:"3 × 15 / kol", t:"6 kg, tepede 1 sn dur.", q:"one arm dumbbell row proper form"},
-        {n:"Ayak yükseltilmiş hip thrust", en:"Feet-Elevated Glute Bridge", d:"3 × 20", q:"feet elevated glute bridge form"},
-        {n:"Yan plank", en:"Side Plank", d:"3 × 30 sn / taraf", q:"side plank proper form"}
-      ]
-    }],
-    note:"Barfiks yol haritası: <b>5×2–3 → 5×4 → 5×5.</b> Sonra tempo yavaşlat, tepede 2 sn dur. Kilo düştükçe tekrarlar kendiliğinden artar."
-  },
-  {
-    ab:"Paz", full:"Pazar", kicker:"Toparlanma", title:"Yürüyüş", meta:"serbest · dinlenme", rest:true,
-    blocks:[{
-      h:"Gün",
-      items:[
-        {n:"Uzun yürüyüş", d:"40–60 dk", t:"Tempo serbest. İstemezsen tamamen dinlen."},
-        {n:"Ölü asılma", en:"Dead Hang", d:"1 set", t:"Dayanabildiğin kadar. Omuzlar için.", q:"dead hang how to"}
-      ]
-    }],
-    note:"Sabah aç karnına tart, haftada bir göbek çevresi ölç. <b>Günlük dalgalanmaya değil, haftalık ortalamaya bak.</b>"
-  }
+  {ab:"Pzt", full:"Pazartesi", ...D1},
+  {ab:"Sal", full:"Salı", kicker:"Dinlenme", title:"Onarım", meta:"5 dk barfiks rutini", rest:true, blocks:[HANG], note:REST_NOTE},
+  {ab:"Çar", full:"Çarşamba", ...D2},
+  {ab:"Per", full:"Perşembe", kicker:"Dinlenme", title:"Onarım", meta:"5 dk barfiks rutini", rest:true, blocks:[HANG], note:REST_NOTE},
+  {ab:"Cum", full:"Cuma", ...D3},
+  {ab:"Cmt", full:"Cumartesi", kicker:"Dinlenme", title:"Dinlen", meta:"program yok", rest:true,
+    blocks:[{h:"Gün", items:[{n:"Tam dinlenme", t:"Uyku ve protein toparlanmanın büyük kısmı."}]}]},
+  {ab:"Paz", full:"Pazar", kicker:"Dinlenme", title:"Dinlen", meta:"program yok", rest:true,
+    blocks:[{h:"Gün", items:[{n:"Tam dinlenme", t:"Sabah aç karnına tart, haftalık ortalamaya bak."}]}]}
 ];
 
 const DINNERS = [

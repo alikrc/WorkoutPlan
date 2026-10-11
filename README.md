@@ -9,7 +9,7 @@ Tek dosyalık antrenman ve beslenme takip sayfası. Bağımlılık yok, derleme 
 - Haftada 3 gün (Pzt/Çar/Cum) dönüşümlü iki seans: **A = squat + dambıl RDL**, **B = şınav + barfiks**. Seans 18.30'da, akşam yemeğinden (19.30) önce: 2 dk ısınma + A için 10 dk, B için 8 dk. Tek haftalarda A–B–A, çift haftalarda B–A–B. Sal/Per 5 dk barfiks rutini, Cmt/Paz dinlenme
 - Hareketlerin Türkçe + İngilizce adları ve her biri için YouTube arama bağlantısı
 - Sayfa açılınca bugünün günü seçili gelir; işaretlenen hareketler `localStorage`'a tarih bazında yazılır, ertesi gün sıfırlanır
-- Günlük makro hedefleri, öğün saatleri ve 5 dönüşümlü akşam öğünü — her biri için YouTube, Nefis Yemek Tarifleri ve yemek.com arama bağlantısı
+- Günlük makro hedefleri, günde 2 öğün (13.00 ve antrenman sonrası 19.30) ve 5 dönüşümlü akşam öğünü — her biri için YouTube, Nefis Yemek Tarifleri ve yemek.com arama bağlantısı
 - "Daha fazla tarif" bölümü: yağsız / yüksek proteinli tarif kategorileri ve hazır YouTube aramaları
 
 ## Yerel kullanım

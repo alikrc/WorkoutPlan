@@ -138,24 +138,34 @@
   <main id="main"></main>
 
   <section class="card">
-    <h2>Her gün beslenme</h2>
+    <h2>Her gün beslenme · 2 öğün</h2>
     <div class="macros">
       <div class="macro"><span class="v">1850</span><span class="k">kcal</span></div>
       <div class="macro"><span class="v">150</span><span class="k">g protein</span></div>
       <div class="macro"><span class="v">65</span><span class="k">g yağ</span></div>
       <div class="macro"><span class="v">165</span><span class="k">g karb.</span></div>
     </div>
-    <p>Pencere 13.00–21.00. <b>13.00:</b> 4 yumurta + 100 g beyaz peynir. <b>16.30:</b> 200 g tavuk/180 g yağsız kıyma + 200 g bulgur veya mercimek + salata. Kreatin 3–5 g, uyku 7+ saat.</p>
+    <div class="meals">
+      <div class="meal">
+        <div><span class="meal-name">13.00 · Birinci öğün</span><span class="meal-num">≈ 850 kcal · 80 g protein</span></div>
+        <p class="meal-desc">3 yumurta + 60 g beyaz peynir + 150 g ızgara tavuk + 200 g bulgur veya mercimek pilavı + salata.</p>
+      </div>
+      <div class="meal">
+        <div><span class="meal-name">19.30 · İkinci öğün</span><span class="meal-num">≈ 1000 kcal · 70 g protein</span></div>
+        <p class="meal-desc">Antrenmandan (18.30) sonra. Aşağıdaki beş seçenekten biri.</p>
+      </div>
+    </div>
+    <p style="margin-top:11px">Pencere 13.00–21.00, aradaki saatlerde öğün yok. Kreatin 3–5 g, uyku 7+ saat.</p>
   </section>
 
   <section class="card" id="dinner">
-    <h2>Akşam öğünü · 19.30</h2>
-    <p style="margin-bottom:12px">Beşi de dönüşümlü, canın hangisini isterse. Yağ bütçesi 13.00'te bitiyor — bu yüzden kuruyemiş sadece birinci seçenekte, diğerlerinde ek yağ yok.</p>
+    <h2>İkinci öğün · 19.30</h2>
+    <p style="margin-bottom:12px">Beşi de dönüşümlü, canın hangisini isterse. Her biri günün yarısı: ≈ 1000 kcal, 65–75 g protein. Yağ bütçesinin yarısı 13.00'te gidiyor — kuruyemiş sadece birinci seçenekte, diğerlerinde ek yağ en fazla 1 yemek kaşığı zeytinyağı.</p>
   </section>
 
   <section class="card" id="more">
     <h2>Daha fazla tarif</h2>
-    <p style="margin-bottom:12px">Bu beşi sıkarsa. Seçerken ölçüt: <b>40 g+ protein, 400–500 kcal, ek yağ yok</b> (zeytinyağı, tereyağı, kuruyemiş yok — ızgara, fırın, haşlama). Nohut yok.</p>
+    <p style="margin-bottom:12px">Bu beşi sıkarsa. Seçerken ölçüt: <b>tarifte 40 g+ protein, ek yağ yok</b> (ızgara, fırın, haşlama). Yanına pilav, bulgur veya ekmek ekleyip ≈ 1000 kcal'e tamamla. Nohut yok.</p>
     <ul class="links" id="more-links"></ul>
   </section>
 
@@ -243,20 +253,20 @@ const DAYS = [
 ];
 
 const DINNERS = [
-  {n:"Yoğurt kâsesi", k:"≈ 500 kcal · 42 g protein",
-   d:"400 g yağsız yoğurt + 30 g ceviz veya badem + 1 elma. Günün tek kuruyemiş fırsatı.",
+  {n:"Yoğurt kâsesi", k:"≈ 990 kcal · 65 g protein",
+   d:"500 g yağsız süzme yoğurt + 40 g ceviz veya badem + 60 g yulaf + 1 muz + 1 elma. Günün tek kuruyemiş fırsatı.",
    q:"yüksek proteinli yoğurt kasesi tarifi", s:"proteinli yoğurt kase"},
-  {n:"Tavuklu patates salata", k:"≈ 450 kcal · 50 g protein",
-   d:"150 g ızgara tavuk göğsü + 100 g haşlanmış patates + bol yeşillik + 150 g yoğurt. Sos: limon, nar ekşisi. Zeytinyağı yok.",
+  {n:"Tavuklu patates salata", k:"≈ 1000 kcal · 75 g protein",
+   d:"150 g ızgara tavuk göğsü + 400 g haşlanmış patates + bol yeşillik + 150 g yoğurt + 2 dilim tam buğday ekmeği. Sos: limon, nar ekşisi, 1 yemek kaşığı zeytinyağı.",
    q:"ızgara tavuklu salata fit tarif", s:"tavuklu salata diyet"},
-  {n:"Fırında köfte", k:"≈ 420 kcal · 50 g protein",
-   d:"180 g yağsız dana kıyma köftesi (fırında, yağsız kâğıt üstünde) + 250 g közlenmiş sebze + 150 g yoğurt.",
+  {n:"Fırında köfte", k:"≈ 980 kcal · 75 g protein",
+   d:"200 g yağsız dana kıyma köftesi (fırında, yağsız kâğıt üstünde) + 250 g közlenmiş sebze (1 yemek kaşığı zeytinyağı) + 300 g bulgur pilavı + 150 g yoğurt + 2 dilim ekmek.",
    q:"fırında yağsız köfte sebzeli tarif", s:"fırında köfte diyet"},
-  {n:"Yeşil mercimek", k:"≈ 450 kcal · 40 g protein",
-   d:"300 g yeşil mercimek yemeği + 250 g yağsız yoğurt + salata. Mercimeği yağsız pişir, sebzeyle hacim ver.",
+  {n:"Yeşil mercimek", k:"≈ 1000 kcal · 75 g protein",
+   d:"450 g yeşil mercimek yemeği + 250 g yağsız yoğurt + salata (1 yemek kaşığı zeytinyağı) + 2 dilim tam buğday ekmeği. Mercimeği yağsız pişir, sebzeyle hacim ver.",
    q:"yağsız yeşil mercimek yemeği tarifi", s:"yeşil mercimek yemeği diyet"},
-  {n:"Tarhana + tavuk", k:"≈ 420 kcal · 45 g protein",
-   d:"300 ml tarhana çorbası + 150 g ızgara tavuk göğsü + salata. Soğuk akşamların en kolayı.",
+  {n:"Tarhana + tavuk", k:"≈ 980 kcal · 70 g protein",
+   d:"500 ml tarhana çorbası + 150 g ızgara tavuk göğsü + 250 g bulgur pilavı + salata (1 yemek kaşığı zeytinyağı) + 2 dilim ekmek. Soğuk akşamların en kolayı.",
    q:"yağsız tarhana çorbası tarifi", s:"tarhana çorbası diyet"}
 ];
 

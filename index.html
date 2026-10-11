@@ -144,11 +144,11 @@
     <h2>Her gün beslenme</h2>
     <div class="macros">
       <div class="macro"><span class="v">1820</span><span class="k">kcal</span></div>
-      <div class="macro"><span class="v">124</span><span class="k">g protein</span></div>
+      <div class="macro"><span class="v">123</span><span class="k">g protein</span></div>
       <div class="macro"><span class="v">103</span><span class="k">g yağ</span></div>
       <div class="macro"><span class="v">97</span><span class="k">g karb.</span></div>
     </div>
-    <p style="margin-bottom:12px">Planın haftalık ortalaması (sabitler + haftada 5 tavuklu, 2 baklagil akşam). Yağ payı yüksek (peynir, yumurta, Nutzilla, ceviz), bu yüzden akşamda ek yağ sınırlı.</p>
+    <p style="margin-bottom:12px">Planın haftalık ortalaması (sabitler + akşamlarda ağırlıklı tavuk, haftada en fazla 2 kıymalı ve 2 baklagil). Yağ payı yüksek (peynir, yumurta, Nutzilla, ceviz), bu yüzden akşamda ek yağ sınırlı.</p>
     <p class="group" style="margin-top:0">Sabit · her gün aynı</p>
     <div class="meals" id="fixed"></div>
     <div class="note" id="fixed-note"></div>
@@ -157,7 +157,7 @@
 
   <section class="card" id="dinner">
     <h2>Akşam yemeği · 19.30</h2>
-    <p style="margin-bottom:4px">Sabit peynirin yanına küçük bir tabak: ≈ 250–290 kcal, tavuklularda 37–40 g protein. Sebze ve salata serbest. Gün toplamı sabitler dahil yazılı. Ek yağ en fazla 1 tatlı kaşığı zeytinyağı, yemeğe tuz ekleme. Makarna ve bulgur çıktı: 60–70 g makarna tek başına tabağın bütün kalori bütçesini yer. Nohut yok.</p>
+    <p style="margin-bottom:4px">Sabit peynirin yanına küçük bir tabak: ≈ 250–290 kcal, tavuklularda 37–40 g protein. Sebze ve salata serbest. Gün toplamı sabitler dahil yazılı. Ek yağ en fazla 1 tatlı kaşığı zeytinyağı, yemeğe tuz ekleme. Makarna ve bulgur çıktı (kıymalı makarna hariç, 40 g): 60–70 g makarna tek başına tabağın bütün kalori bütçesini yer. Nohut yok.</p>
   </section>
 
   <section class="card" id="more">
@@ -263,7 +263,7 @@ const FIXED_P = FIXED.reduce((s, m) => s + m.p, 0);
 
 // kcal ve p yalnızca tabak içindir (sabit peynir hariç). Gün toplamı FIXED ile otomatik toplanır.
 const DINNERS = [
-  {g:"Tavuklu · haftada 5", items:[
+  {g:"Tavuklu · haftada 3–5", items:[
     {n:"Tavada tavuk sote", kcal:280, p:40,
      d:"170 g çiğ tavuk göğsünü küp doğra, 1 tatlı kaşığı zeytinyağında biberle sote et. Yanına bol salata.",
      q:"tavuk göğsü sote tarifi", s:"tavuk göğsü sote"},
@@ -282,6 +282,17 @@ const DINNERS = [
     {n:"Yoğurtlu tavuk salatası", kcal:275, p:40,
      d:"120 g haşlanmış, didiklenmiş tavuk göğsü + 100 g yoğurt, pul biber. Yanına salatalık. Yağ yok.",
      q:"yoğurtlu tavuk salatası tarifi", s:"yoğurtlu tavuk salatası"}
+  ]},
+  {g:"Kıymalı · haftada en fazla 2 (makarna en fazla 1) · yağsız kıyma şart", items:[
+    {n:"Fırında yağsız köfte", kcal:255, p:32,
+     d:"150 g yağsız dana kıyma + 1 rendelenmiş soğan + baharat (yumurta ve ekmek yok), yağlı kâğıt üzerinde fırında pişir. Yanına bol salata. Sade kıymaysa 100 g al, protein yarı yarıya düşer.",
+     q:"fırında yağsız köfte tarifi", s:"fırında köfte"},
+    {n:"Kıymalı sebze sote", kcal:285, p:35,
+     d:"150 g yağsız kıymayı yağsız tavada kavur, 2 biber, 2 domates ve soğan ekle, kısık ateşte pişir. Yağ yok. Sade kıymaysa 100 g al, çıkan yağı süz.",
+     q:"kıymalı sebze sote tarifi", s:"kıymalı sebze sote"},
+    {n:"Kıymalı makarna", kcal:320, p:27,
+     d:"40 g kuru makarnayı haşla. 100 g yağsız kıymayı yağsız tavada kavur, bol rendelenmiş domates ekle, makarnanın üstüne dök.",
+     q:"kıymalı makarna tarifi", s:"kıymalı makarna"}
   ]},
   {g:"Baklagil · haftada en fazla 2 (protein çok daha düşük)", items:[
     {n:"Yeşil mercimek yemeği", kcal:270, p:15,
